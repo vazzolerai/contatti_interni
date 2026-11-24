@@ -47,10 +47,11 @@ Legenda: ✅ fatto · 🧪 da provare (consulente) · ⬜ da fare
 - ✅ Workflow keep-alive ogni 2 giorni, con auto-riattivazione contro il limite dei 60 giorni
 - ✅ Installer costruito e firmato in locale: 1,95 MB
 - 🧪 Copia di sicurezza della chiave privata nel gestore di password
-- 🧪 Segreti su GitHub (SUPABASE_URL, SUPABASE_CHIAVE_PUBBLICA, TAURI_SIGNING_PRIVATE_KEY)
-- 🧪 Prima release v0.1.0 da GitHub, installazione su un PC
+- ✅ Segreti su GitHub impostati (script configura-github)
+- ✅ Prima release v0.1.0 pubblicata: installer 2 MB + latest.json firmato
+- 🧪 Installazione sui PC (docs/GUIDA.md, Parte 5)
 - 🧪 Prova aggiornamento: pubblicare v0.1.1 e vedere il PC aggiornarsi da solo
-- 🧪 Keep-alive lanciato a mano: verde + `ultimo_ping` aggiornato
+- ✅ Keep-alive: esecuzione verde, `ultimo_ping` aggiornato nel database
 - 🧪 Avvio automatico dopo riavvio del PC (versione installata)
 
 ## Fase 5 – Documentazione
