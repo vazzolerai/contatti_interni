@@ -10,7 +10,7 @@
 begin;
 create extension if not exists pgtap with schema extensions;
 
-select plan(44);
+select plan(47);
 
 -- ---------------------------------------------------------------------
 -- Preparazione: 4 account di prova (Casa madre, PV1, PV2, PV3 disattivato)
@@ -53,6 +53,9 @@ end $$;
 -- PUNTO VENDITA 1
 -- =====================================================================
 select pg_temp.come('t-pv1');
+
+select is((select codice from public.mia_sede()), 't-pv1',
+  'mia_sede() restituisce la sede dell''account connesso');
 
 select is((select count(*)::int from public.messaggi), 3,
   'PV1 vede solo i 3 messaggi della propria conversazione');
@@ -257,6 +260,9 @@ select pg_temp.come('t-pv3');
 select is((select count(*)::int from public.messaggi), 0,
   'Un punto vendita disattivato non vede più nulla');
 
+select is((select count(*)::int from public.mia_sede()), 0,
+  'Per un punto vendita disattivato mia_sede() non restituisce nulla');
+
 select throws_ok(
   format($$insert into public.messaggi (punto_vendita_id, direzione, testo)
            values (%s, 'verso_sede', 'Ci sono ancora?')$$,
@@ -280,6 +286,11 @@ select throws_ok(
   $$select * from public.sedi$$,
   '42501', null,
   'Senza login non si legge l''elenco delle sedi');
+
+select throws_ok(
+  $$select * from public.mia_sede()$$,
+  '42501', null,
+  'Senza login non si può chiamare mia_sede()');
 
 select lives_ok(
   $$select public.ping()$$,

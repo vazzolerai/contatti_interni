@@ -1,0 +1,23 @@
+{
+  "name": "contatti-interni",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc --noEmit && vite build",
+    "tauri": "tauri",
+    "avvia": "tauri dev",
+    "controlla": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.119.2",
+    "@tauri-apps/api": "^2.12.5",
+    "@tauri-apps/plugin-log": "^2.10.2"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.12.6",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.8"
+  }
+}

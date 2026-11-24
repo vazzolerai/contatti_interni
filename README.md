@@ -6,7 +6,7 @@ Messaggistica interna tra la **Casa madre** e i **punti vendita**: un canale chi
 - La Casa madre vede tutte le conversazioni e risponde al singolo punto vendita.
 - I messaggi più vecchi di 7 giorni vengono cancellati automaticamente.
 
-> Stato: **fase 1 di 5** (database e sicurezza). Vedi [docs/CHECKLIST.md](docs/CHECKLIST.md).
+> Stato: **fase 2 di 5** (app con le due viste). Vedi [docs/CHECKLIST.md](docs/CHECKLIST.md).
 
 ## Struttura
 

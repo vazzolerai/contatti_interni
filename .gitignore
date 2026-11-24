@@ -17,3 +17,12 @@ supabase/.temp/
 *.log
 .DS_Store
 Thumbs.db
+
+# Documenti personali e password: MAI su GitHub
+*.docx
+*.xlsx
+*.pdf
+*psw*
+
+# Impostazioni locali dell'editor
+.claude/
