@@ -62,9 +62,12 @@ grant execute on function privato.e_punto_vendita_attivo(bigint) to authenticate
 -- ---------------------------------------------------------------------
 -- Trigger: valori decisi dal server, non dal client
 -- ---------------------------------------------------------------------
+-- security definer: il controllo sulla sede deve vedere tutte le sedi, non solo
+-- quelle visibili all'utente (altrimenti l'errore arriverebbe da qui e non dalle RLS).
 create function privato.prepara_nuovo_messaggio()
 returns trigger
 language plpgsql
+security definer
 set search_path = ''
 as $$
 begin
