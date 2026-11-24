@@ -1,0 +1,34 @@
+# Avvia un Supabase temporaneo, applica le migrazioni ed esegue i test di sicurezza.
+# Parte a ogni push che tocca la cartella supabase/ e si può lanciare a mano.
+name: Test database e sicurezza
+
+on:
+  push:
+    paths:
+      - "supabase/**"
+      - ".github/workflows/test-db.yml"
+  pull_request:
+    paths:
+      - "supabase/**"
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Avvia Supabase locale (applica le migrazioni)
+        run: supabase start
+
+      - name: Esegui i test di sicurezza
+        run: supabase test db
+
+      - name: Ferma Supabase
+        if: always()
+        run: supabase stop --no-backup

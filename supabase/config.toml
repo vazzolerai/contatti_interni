@@ -1,0 +1,7 @@
+# Configurazione per il Supabase LOCALE usato dai test automatici (GitHub Actions).
+# Il progetto vero si configura dal pannello di Supabase (vedi docs/GUIDA.md).
+project_id = "contatti-interni"
+
+[auth]
+# Registrazione pubblica disattivata: gli account li crea solo lo script admin.
+enable_signup = false

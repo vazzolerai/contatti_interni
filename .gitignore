@@ -1,0 +1,19 @@
+# Segreti: MAI su GitHub
+.env
+.env.*
+!.env.example
+*.key
+
+# Dipendenze e build
+node_modules/
+dist/
+target/
+
+# Supabase locale
+supabase/.branches/
+supabase/.temp/
+
+# Varie
+*.log
+.DS_Store
+Thumbs.db
