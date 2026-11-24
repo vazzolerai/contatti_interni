@@ -27,7 +27,12 @@ fn mostra(app: &AppHandle) {
 fn crea_tray(app: &AppHandle) -> tauri::Result<()> {
     let apri = MenuItem::with_id(app, "apri", "Apri Contatti Interni", true, None::<&str>)?;
     let esci = MenuItem::with_id(app, "esci", "Esci", true, None::<&str>)?;
-    let menu = Menu::with_items(app, &[&apri, &esci])?;
+    // Riga non cliccabile: utile al consulente per sapere se il PC è aggiornato
+    let versione = MenuItem::with_id(
+        app, "versione", format!("Versione {}", app.package_info().version), false, None::<&str>,
+    )?;
+    let separatore = tauri::menu::PredefinedMenuItem::separator(app)?;
+    let menu = Menu::with_items(app, &[&apri, &esci, &separatore, &versione])?;
 
     let mut tray = TrayIconBuilder::with_id(ID_TRAY)
         .tooltip("Contatti Interni")
@@ -127,6 +132,8 @@ pub fn run() {
         .plugin(tauri_plugin_single_instance::init(|app, _argomenti, _cartella| mostra(app)))
         .plugin(log)
         .plugin(tauri_plugin_notification::init())
+        .plugin(tauri_plugin_updater::Builder::new().build())
+        .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_autostart::init(tauri_plugin_autostart::MacosLauncher::LaunchAgent, None))
         .setup(|app| {
             crea_tray(app.handle())?;

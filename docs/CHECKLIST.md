@@ -39,10 +39,18 @@ Legenda: ✅ fatto · 🧪 da provare (consulente) · ⬜ da fare
 - 🧪 Avvio automatico: verificabile solo con l'installer (fase 4)
 
 ## Fase 4 – Build, installer, aggiornamenti
-- ⬜ Workflow release su runner Windows (installer NSIS .exe)
-- ⬜ Chiave di firma updater nei segreti GitHub
-- ⬜ Updater da GitHub Releases
-- ⬜ Workflow keep-alive ogni 2-3 giorni
+- ✅ Workflow  su runner Windows: installer NSIS .exe pubblicato nelle Release
+- ✅ Chiave di firma updater creata (privata in %USERPROFILE%.tauri, fuori dal repo)
+- ✅ Updater da GitHub Releases: controllo ogni 6 ore, installazione quando il PC non è in uso
+- ✅ Versione visibile nel menu dell'icona vicino all'orologio
+- ✅ Script - ✅ Workflow keep-alive ogni 2 giorni, con auto-riattivazione contro il limite dei 60 giorni
+- ✅ Installer costruito e firmato in locale: 1,95 MB
+- 🧪 Copia di sicurezza della chiave privata nel gestore di password
+- 🧪 Segreti su GitHub (SUPABASE_URL, SUPABASE_CHIAVE_PUBBLICA, TAURI_SIGNING_PRIVATE_KEY)
+- 🧪 Prima release v0.1.0 da GitHub, installazione su un PC
+- 🧪 Prova aggiornamento: pubblicare v0.1.1 e vedere il PC aggiornarsi da solo
+- 🧪 Keep-alive lanciato a mano: verde +  aggiornato
+- 🧪 Avvio automatico dopo riavvio del PC (versione installata)
 
 ## Fase 5 – Documentazione
 - ⬜ README completo
@@ -50,8 +58,9 @@ Legenda: ✅ fatto · 🧪 da provare (consulente) · ⬜ da fare
 - ⬜ Scheda di sicurezza per l'IT del cliente
 
 ## Punti aperti / rischi residui
-- Keep-alive: GitHub disattiva i workflow pianificati dopo 60 giorni senza attività nel repo (da gestire in fase 4).
+- Keep-alive: GitHub sospende i workflow pianificati dopo 60 giorni senza attività. Mitigazione: auto-riattivazione a ogni esecuzione + email di GitHub + controllo di . La riattivazione azzera il conteggio secondo l'esperienza comune, non secondo una garanzia scritta di GitHub.
 - Portare la finestra in primo piano può essere limitato da Windows (mitigazioni in fase 3).
 - App non firmata → avviso SmartScreen al primo avvio (documentato in fase 5).
 - Realtime con finestra nascosta: il battito gira in un worker per non essere rallentato da Windows; da verificare sul campo in fase 3 (finestra chiusa nell'area di notifica per ore).
 - La coda dei messaggi non ancora inviati e le bozze sono salvate in chiaro nella cartella dati dell'app sul PC (solo finché non partono). Rischio basso: indicato nella scheda di sicurezza.
+- Chiave privata degli aggiornamenti: chi la possiede può pubblicare aggiornamenti accettati dalle app. Sta solo sul PC del consulente e nei segreti GitHub; se viene persa, servono reinstallazioni manuali.

@@ -1,0 +1,51 @@
+# Keep-alive: evita che Supabase (piano gratuito) metta in pausa il progetto
+# dopo 7 giorni senza attività (es. chiusura per ferie).
+# Ogni 2 giorni chiama la funzione ping() del database, che annota l'ora nella
+# tabella "manutenzione" (colonna ultimo_ping): così si verifica che funzioni.
+name: Keep-alive Supabase
+
+on:
+  schedule:
+    - cron: "23 6 */2 * *" # ogni 2 giorni alle 06:23 UTC (07:23 / 08:23 in Italia)
+  workflow_dispatch: # si può lanciare anche a mano da GitHub
+
+permissions:
+  actions: write # serve solo a "riattivare" questo stesso workflow (vedi sotto)
+  contents: read
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Chiama ping() su Supabase
+        env:
+          URL: ${{ secrets.SUPABASE_URL }}
+          CHIAVE: ${{ secrets.SUPABASE_CHIAVE_PUBBLICA }}
+        run: |
+          if [ -z "$URL" ] || [ -z "$CHIAVE" ]; then
+            echo "::error title=Segreti mancanti::Imposta SUPABASE_URL e SUPABASE_CHIAVE_PUBBLICA nei segreti del repository."
+            exit 1
+          fi
+          for tentativo in 1 2 3; do
+            risposta=$(curl -sS --max-time 30 -X POST "$URL/rest/v1/rpc/ping" \
+              -H "apikey: $CHIAVE" -H "Content-Type: application/json" -d '{}' || true)
+            echo "Risposta: $risposta"
+            if echo "$risposta" | grep -q '"ok"[[:space:]]*:[[:space:]]*true'; then
+              echo "### Keep-alive riuscito" >> "$GITHUB_STEP_SUMMARY"
+              echo "Risposta del database: \`$risposta\`" >> "$GITHUB_STEP_SUMMARY"
+              exit 0
+            fi
+            echo "Tentativo $tentativo non riuscito, riprovo tra 60 secondi..."
+            sleep 60
+          done
+          echo "::error title=Keep-alive non riuscito::Il database non ha risposto. Controlla su supabase.com che il progetto non sia in pausa."
+          exit 1
+
+      # GitHub disattiva i workflow pianificati dei repository senza attività
+      # per 60 giorni. "Riattivare" il workflow a ogni esecuzione azzera il conteggio.
+      - name: Mantieni attivo questo workflow
+        if: always()
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh workflow enable keep-alive.yml --repo "$GITHUB_REPOSITORY" || echo "::warning::Riattivazione non riuscita (non grave)"

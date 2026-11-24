@@ -1,0 +1,84 @@
+# Costruisce l'installer Windows e lo pubblica nelle Release di GitHub.
+# Parte quando si pubblica una versione con lo script:  npm run nuova-versione -- 0.2.0
+# (che crea il tag "v0.2.0"). Le app installate si aggiornano da sole leggendo
+# il file latest.json di quest'ultima Release.
+name: Release (installer e aggiornamenti)
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  installer-windows:
+    runs-on: windows-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Controlla che i segreti siano impostati
+        env:
+          URL: ${{ secrets.SUPABASE_URL }}
+          CHIAVE: ${{ secrets.SUPABASE_CHIAVE_PUBBLICA }}
+          FIRMA: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+        run: |
+          mancano=""
+          [ -z "$URL" ] && mancano="$mancano SUPABASE_URL"
+          [ -z "$CHIAVE" ] && mancano="$mancano SUPABASE_CHIAVE_PUBBLICA"
+          [ -z "$FIRMA" ] && mancano="$mancano TAURI_SIGNING_PRIVATE_KEY"
+          if [ -n "$mancano" ]; then
+            echo "::error title=Segreti mancanti::Imposta su GitHub (Settings > Secrets and variables > Actions):$mancano"
+            exit 1
+          fi
+
+      - name: Controlla che il tag corrisponda alla versione dell'app
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          versione=$(node -p "require('./app/src-tauri/tauri.conf.json').version")
+          if [ "v$versione" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error title=Versione non coerente::Il tag è ${GITHUB_REF_NAME} ma l'app è alla versione $versione. Usa: npm run nuova-versione"
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: app/package-lock.json
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: app/src-tauri -> target
+
+      - name: Installa le dipendenze
+        working-directory: app
+        run: npm ci
+
+      - name: Costruisci e pubblica
+        uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+          VITE_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          VITE_SUPABASE_CHIAVE_PUBBLICA: ${{ secrets.SUPABASE_CHIAVE_PUBBLICA }}
+          VITE_DOMINIO_EMAIL: ${{ secrets.DOMINIO_EMAIL || 'contatti-interni.local' }}
+        with:
+          projectPath: app
+          tagName: v__VERSION__
+          releaseName: "Contatti Interni __VERSION__"
+          releaseBody: |
+            Installer per Windows 11: scarica il file che termina con **_x64-setup.exe**.
+            Le app già installate si aggiornano da sole (entro qualche ora, quando il PC non è in uso).
+          releaseDraft: false
+          prerelease: false
+          includeUpdaterJson: true

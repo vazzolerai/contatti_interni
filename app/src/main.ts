@@ -3,6 +3,7 @@ import './log';
 import { Archivio } from './archivio';
 import { invoke } from '@tauri-apps/api/core';
 import { listen } from '@tauri-apps/api/event';
+import { avviaAggiornamenti, impostaControlloCoda } from './aggiornamenti';
 import { aggiornaBadge, notifica } from './avvisi';
 import { configurazioneValida, inTauri } from './config';
 import { log } from './log';
@@ -138,6 +139,8 @@ if (!configurazioneValida) {
   vistaAttesa(radice, 'App non configurata.', 'Contatta chi ha installato l\'app.');
 } else {
   log.info('Avvio di Contatti Interni');
+  impostaControlloCoda(() => archivio?.messaggiInCoda ?? 0);
+  avviaAggiornamenti();
   vistaAttesa(radice, 'Avvio in corso…');
   void ripristina();
 }

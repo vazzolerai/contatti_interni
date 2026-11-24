@@ -237,3 +237,68 @@ VITE_ANTEPRIMA_ARRIVO_SECONDI=40
 ```
 
 poi `npm run avvia`: ogni 40 secondi arriva un messaggio finto. **Cancella il file finita la prova**, altrimenti l'app di prova resta in anteprima.
+
+---
+
+## Parte 4 – Installer, aggiornamenti automatici e keep-alive
+
+### 4.1 La chiave di firma degli aggiornamenti (già creata)
+Gli aggiornamenti sono **firmati**: l'app installata accetta solo file firmati con la chiave del progetto. Così nessuno può distribuire una versione falsa, nemmeno chi riuscisse a caricare file nelle Release.
+
+- Chiave **pubblica**: è già dentro l'app (`app/src-tauri/tauri.conf.json`). Non è segreta.
+- Chiave **privata**: `%USERPROFILE%\.tauri\contatti-interni-updater.key`, sul tuo PC e **fuori** dal progetto.
+
+> ⚠️ **Fai subito una copia di sicurezza della chiave privata** nel tuo gestore di password (come nota o allegato). Se la perdi, le app installate non accetteranno più aggiornamenti e bisognerà reinstallarle a mano su tutti i PC.
+
+### 4.2 Segreti su GitHub (una volta sola)
+Su GitHub: repository `contatti_interni` → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Crea questi segreti, con il **nome esatto**:
+
+| Nome | Valore |
+|---|---|
+| `SUPABASE_URL` | lo stesso di `admin/.env` (es. `https://abcd….supabase.co`) |
+| `SUPABASE_CHIAVE_PUBBLICA` | la chiave **pubblica** (Publishable / anon). **Mai** quella segreta |
+| `TAURI_SIGNING_PRIVATE_KEY` | il contenuto del file della chiave privata (vedi sotto) |
+
+Per copiare la chiave privata negli appunti senza aprirla:
+
+```powershell
+Get-Content "$env:USERPROFILE\.tauri\contatti-interni-updater.key" | Set-Clipboard
+```
+
+poi incolla (Ctrl+V) nel campo *Secret* su GitHub.
+
+> Facoltativo: `DOMINIO_EMAIL`, solo se in `admin/.env` hai cambiato `DOMINIO_EMAIL`. La chiave è senza password, quindi `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` non serve.
+
+### 4.3 Pubblicare una versione
+Dalla cartella `app`:
+
+```powershell
+cd "C:\Users\gmgar\Desktop\programmazione\Messaggistica Vazzoler\app"
+```
+
+```powershell
+npm run nuova-versione -- 0.1.1
+```
+
+Lo script aggiorna il numero di versione, crea il commit e il tag, chiede conferma (`s`) e invia tutto a GitHub. Su GitHub → **Actions** → **Release (installer e aggiornamenti)** parte la costruzione, che dura circa 15 minuti. Alla fine, in **Releases** trovi:
+- `Contatti Interni_0.1.1_x64-setup.exe` → **l'installer da usare sui PC**;
+- `latest.json` e un file `.sig` → servono agli aggiornamenti automatici, non toccarli.
+
+> La **prima** versione si può pubblicare anche senza cambiare numero: GitHub → Actions → *Release (installer e aggiornamenti)* → **Run workflow**. Crea la Release `v0.1.0`.
+
+### 4.4 Come arrivano gli aggiornamenti sui PC
+- Ogni app controlla GitHub **1 minuto dopo l'avvio e poi ogni 6 ore**.
+- Se c'è una versione nuova la scarica in silenzio e la installa **solo quando il PC non è usato da 3 minuti** e non ci sono messaggi in attesa di invio. Compare per qualche secondo una piccola barra di avanzamento, poi l'app si riapre da sola. Bozze e messaggi in coda restano.
+- Per controllare la versione di un PC: tasto destro sull'icona vicino all'orologio → l'ultima riga del menu dice **Versione X.Y.Z**.
+
+### 4.5 Keep-alive (evita la pausa di Supabase)
+Il piano gratuito di Supabase mette in pausa il progetto dopo 7 giorni senza attività (es. ferie con i PC spenti). Il workflow **Keep-alive Supabase** chiama il database ogni 2 giorni.
+
+**Verifica che funzioni** (dopo aver impostato i segreti):
+1. GitHub → **Actions** → **Keep-alive Supabase** → **Run workflow**. Dopo circa 30 secondi deve comparire la spunta verde; aprendo l'esecuzione, il riepilogo mostra `Keep-alive riuscito` e la risposta del database.
+2. Supabase → **Table Editor** → tabella `manutenzione` → la colonna `ultimo_ping` deve avere data e ora di adesso. Nella stessa riga, `ultima_pulizia` indica quando è girata l'ultima pulizia notturna dei messaggi vecchi.
+3. Nelle settimane successive basta guardare ogni tanto `ultimo_ping`: deve essere al massimo di 2-3 giorni prima.
+
+**Il limite dei 60 giorni di GitHub:** GitHub sospende i workflow pianificati dei repository pubblici senza attività da 60 giorni. Il keep-alive si "riattiva" da solo a ogni esecuzione per azzerare il conteggio. Se comunque venisse sospeso, GitHub manda un'email all'account `vazzolerai` e nella pagina del workflow compare un pulsante **Enable workflow**: basta premerlo.
+
+**Se il progetto Supabase è già in pausa:** su supabase.com apri il progetto e premi **Restore project** (qualche minuto). Le app si ricollegano da sole.
