@@ -3,7 +3,9 @@
   "private": true,
   "type": "module",
   "description": "Script di amministrazione di Contatti Interni (account, password, punti vendita).",
-  "engines": { "node": ">=22.9" },
+  "engines": {
+    "node": ">=22.9"
+  },
   "scripts": {
     "crea-account": "node --env-file-if-exists=.env admin.mjs crea-account",
     "elenco": "node --env-file-if-exists=.env admin.mjs elenco",
@@ -13,7 +15,8 @@
     "disattiva": "node --env-file-if-exists=.env admin.mjs disattiva",
     "riattiva": "node --env-file-if-exists=.env admin.mjs riattiva",
     "verifica-sicurezza": "node --env-file-if-exists=.env verifica-sicurezza.mjs",
-    "aiuto": "node admin.mjs"
+    "aiuto": "node admin.mjs",
+    "configura-github": "node --env-file-if-exists=.env configura-github.mjs"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.0"

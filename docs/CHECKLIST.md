@@ -9,8 +9,8 @@ Legenda: ✅ fatto · 🧪 da provare (consulente) · ⬜ da fare
 - ✅ Pulizia notturna con pg_cron (messaggi > 7 giorni)
 - ✅ 47 test pgTAP + workflow GitHub `test-db.yml`
 - ✅ Script admin: crea-account, elenco, sincronizza-nomi, reimposta-password, aggiungi/disattiva/riattiva, verifica-sicurezza
-- 🧪 Creare progetto Supabase, applicare migrazioni, creare account (docs/GUIDA.md, Parte 1)
-- 🧪 `npm run verifica-sicurezza` sul progetto vero
+- ✅ Progetto Supabase creato, migrazioni applicate (1-6), 19 account creati
+- ✅ `npm run verifica-sicurezza` sul progetto vero: 14/14
 - ✅ Test su GitHub Actions verdi
 
 ## Fase 2 – App con le due viste
@@ -24,7 +24,7 @@ Legenda: ✅ fatto · 🧪 da provare (consulente) · ⬜ da fare
 - ✅ File di log locale, nessun errore tecnico a schermo
 - ✅ Funzione `mia_sede()` (nuova migrazione 5) + 3 test
 - ✅ Anteprima con dati finti (solo sviluppo)
-- 🧪 Prova con il progetto Supabase vero (docs/GUIDA.md, Parte 2)
+- ✅ Prova con il progetto vero (account temporaneo): accesso, invio, risposta in tempo reale, fascia gialla
 
 ## Fase 3 – Notifiche, tray, avvio automatico
 - ✅ Icona nell'area di notifica (Apri / Esci con conferma); la X nasconde la finestra
@@ -54,9 +54,9 @@ Legenda: ✅ fatto · 🧪 da provare (consulente) · ⬜ da fare
 - 🧪 Avvio automatico dopo riavvio del PC (versione installata)
 
 ## Fase 5 – Documentazione
-- ⬜ README completo
-- ⬜ Guida: installazione su Windows 11, SmartScreen, configurazione PC
-- ⬜ Scheda di sicurezza per l'IT del cliente
+- ✅ README completo
+- ✅ Guida: Supabase, account, GitHub (script configura-github), installazione su Windows 11, SmartScreen, configurazione PC, cosa dire alle commesse
+- ✅ Scheda di sicurezza per l'IT del cliente (docs/SCHEDA-SICUREZZA.md)
 
 ## Punti aperti / rischi residui
 - Keep-alive: GitHub sospende i workflow pianificati dopo 60 giorni senza attività. Mitigazione: auto-riattivazione a ogni esecuzione + email di GitHub + controllo di `ultimo_ping`. La riattivazione azzera il conteggio secondo l'esperienza comune, non secondo una garanzia scritta di GitHub.

@@ -251,7 +251,30 @@ Gli aggiornamenti sono **firmati**: l'app installata accetta solo file firmati c
 > ⚠️ **Fai subito una copia di sicurezza della chiave privata** nel tuo gestore di password (come nota o allegato). Se la perdi, le app installate non accetteranno più aggiornamenti e bisognerà reinstallarle a mano su tutti i PC.
 
 ### 4.2 Segreti su GitHub (una volta sola)
-Su GitHub: repository `contatti_interni` → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Crea questi segreti, con il **nome esatto**:
+
+**Metodo consigliato: uno script fa tutto.** Carica i segreti leggendoli da `admin/.env` e dalla chiave di firma, senza mostrarli, poi avvia il keep-alive e la prima versione dell'installer.
+
+1. Login a GitHub dalla riga di comando (una volta sola). Rispondi alle domande con Invio; quando compare un codice di 8 caratteri, si apre il browser: incollalo ed entra con **vazzolerai**.
+
+```powershell
+& "C:\Program Files\GitHub CLI\gh.exe" auth login --web --git-protocol https
+```
+
+2. Lancia la configurazione:
+
+```powershell
+cd "C:\Users\gmgar\Desktop\programmazione\Messaggistica Vazzoler\admin"
+```
+
+```powershell
+npm run configura-github
+```
+
+Alla fine deve stampare 4 righe `✔ segreto … impostato`, poi `✔ Keep-alive avviato` e `✔ Costruzione della prima versione avviata`.
+
+> Lo script si ferma se sei collegato con un account GitHub diverso da `vazzolerai`, o se in `admin/.env` la chiave pubblica sembra una chiave segreta.
+
+**Metodo manuale (alternativa):** GitHub → repository `contatti_interni` → **Settings** → **Secrets and variables** → **Actions** → **New repository secret**. Crea questi segreti, con il **nome esatto**:
 
 | Nome | Valore |
 |---|---|
@@ -302,3 +325,73 @@ Il piano gratuito di Supabase mette in pausa il progetto dopo 7 giorni senza att
 **Il limite dei 60 giorni di GitHub:** GitHub sospende i workflow pianificati dei repository pubblici senza attività da 60 giorni. Il keep-alive si "riattiva" da solo a ogni esecuzione per azzerare il conteggio. Se comunque venisse sospeso, GitHub manda un'email all'account `vazzolerai` e nella pagina del workflow compare un pulsante **Enable workflow**: basta premerlo.
 
 **Se il progetto Supabase è già in pausa:** su supabase.com apri il progetto e premi **Restore project** (qualche minuto). Le app si ricollegano da sole.
+
+---
+
+## Parte 5 – Installare l'app su un PC Windows 11 (negozio o Casa madre)
+
+Tempo: circa 10 minuti per PC. Serve: il **codice** della sede e la sua **password** (dal tuo gestore di password).
+
+> Installa l'app **con l'utente Windows che le commesse usano tutti i giorni**: l'installazione vale solo per quell'utente e non richiede la password di amministratore.
+
+### 5.1 Scaricare l'installer
+1. Sul PC del negozio apri **Microsoft Edge** e vai su: <https://github.com/vazzolerai/contatti_interni/releases/latest>
+2. Nella sezione **Assets** clicca il file che termina con **`_x64-setup.exe`** (circa 2 MB).
+3. Edge potrebbe dire *"… non viene scaricato comunemente"*. Passa il mouse sul download → **⋯** (tre puntini) → **Mantieni** → **Mostra altro** → **Mantieni comunque**.
+
+### 5.2 Avviso di SmartScreen ("PC protetto da Windows")
+L'app non ha una firma digitale a pagamento (vedi la scheda di sicurezza), quindi la prima volta Windows mostra una finestra blu:
+
+1. **PC protetto da Windows** → clicca **Ulteriori informazioni** (link piccolo sotto il testo).
+2. Compare il nome del file e il pulsante **Esegui comunque** → cliccalo.
+
+Succede solo all'installazione: gli aggiornamenti automatici successivi non mostrano l'avviso.
+
+> **Se Windows blocca l'app senza pulsante "Esegui comunque"**: sul PC è attivo **Controllo intelligente delle app** (Sicurezza di Windows → Controllo app e browser). Questa funzione blocca tutte le app senza firma digitale. Non disattivarla di tua iniziativa: va decisa con l'IT del cliente (vedi scheda di sicurezza, "Installer non firmato").
+
+### 5.3 Installazione
+1. Si apre l'installazione in italiano: **Avanti** → **Installa** → **Fine** (lascia spuntato "Avvia Contatti Interni").
+2. Compare la schermata **Contatti Interni**: inserisci **Codice sede** (es. `pv07`) e **Password** → **Accedi**. Le credenziali vanno inserite solo questa volta.
+3. Deve aprirsi la chat (punto vendita) o l'elenco dei punti vendita (Casa madre).
+
+### 5.4 Configurare il PC (importante per non perdere i messaggi)
+**a) Icona sempre visibile vicino all'orologio**
+Windows tende a nascondere le icone nella freccia **^**. Per tenerla in vista:
+Impostazioni → **Personalizzazione** → **Barra delle applicazioni** → **Altre icone della barra delle applicazioni** → attiva **Contatti Interni**.
+
+**b) Notifiche attive con suono**
+Impostazioni → **Sistema** → **Notifiche**:
+- **Notifiche**: attivato;
+- **Non disturbare**: disattivato (e in "Attiva automaticamente non disturbare" togli le spunte);
+- nell'elenco delle app, **Contatti Interni**: attivato, con **Riproduci un suono** attivo.
+
+**c) Il PC non deve andare in sospensione durante l'orario di apertura**
+Impostazioni → **Sistema** → **Alimentazione** → **Schermo e sospensione** → "Metti il dispositivo in sospensione dopo": **Mai** (quando collegato all'alimentazione). Lo schermo può spegnersi, il PC no: se il PC dorme, i messaggi arrivano solo al risveglio.
+
+**d) Volume**
+Controlla che il volume del PC non sia a zero o disattivato.
+
+**e) Icona sul desktop**
+L'installazione crea l'icona sul desktop. Se manca: **Start** → cerca *Contatti Interni* → tasto destro → **Apri percorso file** → trascina l'icona sul desktop tenendo premuto **Alt**.
+
+### 5.5 Prova finale (2 minuti)
+1. Dal PC della Casa madre scrivi al punto vendita appena installato.
+2. Sul PC del negozio: la finestra torna davanti, suona, compare la fascia gialla. Premi **Ho visto**.
+3. Dal negozio rispondi: in Casa madre arriva la notifica con il nome del punto vendita.
+4. **Riavvia il PC del negozio**: dopo l'accesso a Windows, Contatti Interni deve ripartire da solo, già collegato e senza chiedere la password.
+5. Tasto destro sull'icona vicino all'orologio: l'ultima riga indica la **versione** installata.
+
+### 5.6 Cosa dire alle commesse (30 secondi)
+- "Quando la sede vi scrive, la finestra compare davanti con una fascia gialla: leggete e premete **Ho visto**."
+- "Per scrivere alla sede: scrivete nella casella in basso e premete **Invia**. Il nome è facoltativo."
+- "Se chiudete la finestra con la X non succede niente: l'app resta attiva. Per riaprirla, cliccate l'icona vicino all'orologio."
+- "Non usate **Esci** dal menu dell'icona: altrimenti i messaggi non arrivano più fino al riavvio del PC."
+
+### 5.7 Situazioni particolari
+| Situazione | Cosa fare |
+|---|---|
+| Spostare un PC da un negozio a un altro | Nella finestra dell'app: **Ctrl+Maiusc+L** → Scollega → accedi con il codice della nuova sede |
+| Password dimenticata / compromessa | Dal tuo PC: `npm run reimposta-password -- pv07` (cartella `admin`), poi sul PC del negozio inserisci la nuova password quando la chiede |
+| Negozio chiuso definitivamente | `npm run disattiva -- pv07` |
+| Disinstallare | Prima **Ctrl+Maiusc+L** (cancella le credenziali salvate), poi Impostazioni → App → App installate → Contatti Interni → Disinstalla |
+| "Collegamento in corso…" che non sparisce | Controlla la connessione Internet; se tutto il resto funziona, guarda il log (Parte 2) e verifica su supabase.com che il progetto non sia in pausa |
