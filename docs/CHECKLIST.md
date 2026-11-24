@@ -35,8 +35,9 @@ Legenda: ✅ fatto · 🧪 da provare (consulente) · ⬜ da fare
 - ✅ Casa madre: notifica con nome del punto vendita, raggruppata se arrivano più messaggi
 - ✅ WebView2 non rallentato quando la finestra è nascosta; suono senza bisogno di clic
 - ✅ Provato nella finestra vera con messaggi simulati (log: primo piano riuscito, nessun errore)
-- 🧪 Da vedere con i tuoi occhi: icona vicino all'orologio, pallino rosso, notifica, X che nasconde
-- 🧪 Avvio automatico: verificabile solo con l'installer (fase 4)
+- ✅ Verificato sulla versione installata: X che nasconde, finestra che torna davanti, fascia gialla, badge con numero, notifica Windows 'Contatti Interni'
+- 🧪 Icona vicino all'orologio: renderla sempre visibile sui PC (Guida 5.4a)
+- ✅ Avvio automatico registrato in Windows dall'installazione
 
 ## Fase 4 – Build, installer, aggiornamenti
 - ✅ Workflow `release.yml` su runner Windows: installer NSIS .exe pubblicato nelle Release
@@ -46,13 +47,14 @@ Legenda: ✅ fatto · 🧪 da provare (consulente) · ⬜ da fare
 - ✅ Script `npm run nuova-versione -- X.Y.Z`
 - ✅ Workflow keep-alive ogni 2 giorni, con auto-riattivazione contro il limite dei 60 giorni
 - ✅ Installer costruito e firmato in locale: 1,95 MB
+- ✅ Installato sul PC del consulente: icona sul desktop creata, nessun diritto di amministratore richiesto
 - 🧪 Copia di sicurezza della chiave privata nel gestore di password
 - ✅ Segreti su GitHub impostati (script configura-github)
 - ✅ Prima release v0.1.0 pubblicata: installer 2 MB + latest.json firmato
 - 🧪 Installazione sui PC (docs/GUIDA.md, Parte 5)
-- 🧪 Prova aggiornamento: pubblicare v0.1.1 e vedere il PC aggiornarsi da solo
+- ✅ Aggiornamento automatico verificato: 0.1.0 → 0.1.1 da solo in 2 minuti di inattività, sessione ripresa senza password
 - ✅ Keep-alive: esecuzione verde, `ultimo_ping` aggiornato nel database
-- 🧪 Avvio automatico dopo riavvio del PC (versione installata)
+- 🧪 Riavviare un PC e verificare che l'app riparta da sola (registrazione già verificata)
 
 ## Fase 5 – Documentazione
 - ✅ README completo
