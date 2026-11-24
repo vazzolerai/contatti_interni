@@ -3,7 +3,7 @@
 // Vedi docs/GUIDA.md per gli esempi.
 import {
   clientAdmin, emailDi, esci, generaPassword, leggiFileSedi, scriviFileSedi,
-  controllaCodice, trovaUtentePerEmail, stampaPassword,
+  controllaCodice, trovaUtentePerEmail, stampaPassword, scegliPassword,
 } from './comune.mjs';
 
 let admin; // creato dopo aver controllato il comando
@@ -88,20 +88,26 @@ const comandi = {
     stampaPassword(credenziali);
   },
 
-  /** Nuova password per una sede; scollega i PC già collegati. */
-  async 'reimposta-password'(codice) {
+  /**
+   * Nuova password per una sede; scollega i PC già collegati.
+   * Con "--scelgo" la password la scrivi tu (nascosta), altrimenti è generata.
+   */
+  async 'reimposta-password'(codice, opzione) {
     controllaCodice(codice);
+    const scelta = opzione === '--scelgo' || opzione === 'scelgo';
+    if (opzione && !scelta) esci(`Opzione "${opzione}" sconosciuta. Usa: npm run reimposta-password -- ${codice} --scelgo`);
     const sede = await sedeDaCodice(codice);
     if (!sede.user_id) esci(`La sede ${codice} non ha ancora un account: usa "npm run crea-account".`);
 
-    const password = generaPassword();
+    const password = scelta ? await scegliPassword(codice) : generaPassword();
     const { error } = await admin.auth.admin.updateUserById(sede.user_id, { password });
     if (error) esci(`Reimpostazione non riuscita: ${error.message}`);
     await revocaSessioni(sede.user_id);
 
     console.log(`\n  ✔ Password di ${codice} reimpostata. I PC collegati con questo account`);
     console.log('    chiederanno di nuovo il login (entro un\'ora al massimo).');
-    stampaPassword([{ codice, nome: sede.nome, password }]);
+    if (scelta) console.log('    Annotala nel gestore di password: non è salvata da nessuna parte.\n');
+    else stampaPassword([{ codice, nome: sede.nome, password }]);
   },
 
   /** Aggiunge un punto vendita al file e crea il suo account. */
@@ -243,6 +249,7 @@ Comandi disponibili (dalla cartella admin):
   npm run elenco
   npm run sincronizza-nomi
   npm run reimposta-password -- pv03
+  npm run reimposta-password -- pv03 --scelgo   (la password la scrivi tu)
   npm run aggiungi-punto-vendita -- pv19 "Punto vendita 19"
   npm run disattiva -- pv19
   npm run riattiva -- pv19

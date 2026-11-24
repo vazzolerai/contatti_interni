@@ -121,6 +121,7 @@ Risultato atteso: `14 prove superate, 0 fallite`.
 | Vedere lo stato delle sedi e l'ultimo accesso | `npm run elenco` |
 | Cambiare i nomi (dopo aver modificato `config/sedi.json`) | `npm run sincronizza-nomi` |
 | Nuova password per una sede (scollega i PC di quella sede) | `npm run reimposta-password -- pv03` |
+| Come sopra, ma la password la scegli tu (almeno 10 caratteri, lettere e numeri; non si vede mentre la scrivi) | `npm run reimposta-password -- pv03 --scelgo` |
 | Aggiungere un punto vendita | `npm run aggiungi-punto-vendita -- pv19 "Punto vendita 19"` |
 | Disattivare un punto vendita | `npm run disattiva -- pv19` |
 | Riattivarlo | `npm run riattiva -- pv19` |

@@ -50,6 +50,7 @@ Messaggistica interna tra la **Casa madre** e i **punti vendita**: un canale chi
 | Stato delle sedi | `admin` | `npm run elenco` |
 | Cambiare i nomi (dopo aver modificato `config/sedi.json`) | `admin` | `npm run sincronizza-nomi` |
 | Nuova password per una sede | `admin` | `npm run reimposta-password -- pv03` |
+| Nuova password scelta da te | `admin` | `npm run reimposta-password -- pv03 --scelgo` |
 | Aggiungere / disattivare un punto vendita | `admin` | `npm run aggiungi-punto-vendita -- pv19 "Nome"` / `npm run disattiva -- pv19` |
 | Verifica di sicurezza sul progetto vero | `admin` | `npm run verifica-sicurezza` |
 | Configurare GitHub (segreti + prima versione) | `admin` | `npm run configura-github` |

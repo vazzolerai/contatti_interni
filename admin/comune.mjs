@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import { readFileSync, writeFileSync } from 'node:fs';
 import { randomInt } from 'node:crypto';
 import path from 'node:path';
+import readline from 'node:readline';
 import { fileURLToPath } from 'node:url';
 
 const CARTELLA = path.dirname(fileURLToPath(import.meta.url));
@@ -57,6 +58,65 @@ export function generaPassword() {
     const pw = gruppi.join('-');
     if (/[a-z]/.test(pw) && /[A-Z]/.test(pw) && /[0-9]/.test(pw)) return pw;
   }
+}
+
+/**
+ * Controlla una password scelta a mano. Restituisce il motivo del rifiuto, o null se va bene.
+ */
+export function controllaPasswordScelta(password, codice) {
+  if (password !== password.trim()) return 'non deve iniziare o finire con uno spazio.';
+  if (password.length < 10) return 'deve avere almeno 10 caratteri.';
+  if (password.length > 72) return 'può avere al massimo 72 caratteri.';
+  if (!/[a-zA-Z]/.test(password) || !/[0-9]/.test(password)) return 'deve contenere almeno una lettera e almeno un numero.';
+  if (/^(.)\1+$/.test(password.replace(/[0-9]/g, '')) && /^(.)\1+$/.test(password.replace(/[^0-9]/g, ''))) {
+    return 'è troppo ripetitiva.';
+  }
+  const minuscola = password.toLowerCase().replace(/[^a-z0-9]/g, '');
+  const vietate = [codice.replace(/[^a-z0-9]/g, ''), 'password', 'vazzoler', 'contatti', 'interni',
+    'casamadre', 'puntovendita', 'negozio', '123456', 'qwerty', 'asdfgh'];
+  const trovata = vietate.find((p) => p.length >= 3 && minuscola.includes(p));
+  if (trovata) return `contiene "${trovata}", troppo facile da indovinare.`;
+  return null;
+}
+
+/** Chiede un testo senza mostrarlo sullo schermo (per le password). */
+export function chiediNascosto(domanda) {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({ input: process.stdin, output: process.stdout, terminal: true });
+    let muto = false;
+    rl._writeToOutput = (s) => {
+      if (!muto) rl.output.write(s);
+      else if (s.includes('\n') || s.includes('\r')) rl.output.write('\n');
+    };
+    process.stdout.write(domanda);
+    muto = true;
+    rl.question('', (risposta) => {
+      rl.close();
+      resolve(risposta);
+    });
+  });
+}
+
+/** Fa scegliere una password (scritta due volte) e la controlla. */
+export async function scegliPassword(codice) {
+  if (!process.stdin.isTTY) esci('Per scegliere la password lancia il comando da una finestra PowerShell.');
+  console.log('\n  Regole: almeno 10 caratteri, con lettere e numeri; niente nomi ovvi (codice, "vazzoler", "password"...).');
+  console.log('  Mentre scrivi non vedrai nulla: è normale.\n');
+  for (let tentativo = 1; tentativo <= 3; tentativo++) {
+    const prima = await chiediNascosto('  Nuova password: ');
+    const motivo = controllaPasswordScelta(prima, codice);
+    if (motivo) {
+      console.log(`  ✖ La password ${motivo} Riprova.\n`);
+      continue;
+    }
+    const seconda = await chiediNascosto('  Scrivila di nuovo: ');
+    if (prima !== seconda) {
+      console.log('  ✖ Le due password non coincidono. Riprova.\n');
+      continue;
+    }
+    return prima;
+  }
+  esci('Troppi tentativi. Nessuna modifica fatta.');
 }
 
 const REGOLA_CODICE = /^[a-z0-9_-]{2,20}$/;
