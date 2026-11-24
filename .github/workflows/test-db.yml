@@ -17,7 +17,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
       - uses: supabase/setup-cli@v1
         with:
@@ -27,7 +27,24 @@ jobs:
         run: supabase start
 
       - name: Esegui i test di sicurezza
-        run: supabase test db
+        run: |
+          set -o pipefail
+          supabase test db 2>&1 | tee risultato-test.txt
+        # In caso di errore, il dettaglio compare nel riepilogo dell'esecuzione
+        # (visibile senza aprire i log).
+      - name: Riepilogo dei test
+        if: always()
+        run: |
+          {
+            echo '### Risultato dei test di sicurezza'
+            echo '```'
+            cat risultato-test.txt 2>/dev/null || echo 'Nessun risultato'
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"
+          # righe "not ok" e messaggi di errore come annotazioni
+          grep -E 'not ok|ERROR|# +(Failed|have|want|caught|wanted|Looks)|psql:' risultato-test.txt 2>/dev/null | head -40 | while IFS= read -r riga; do
+            echo "::warning title=Test::${riga}"
+          done || true
 
       - name: Ferma Supabase
         if: always()
