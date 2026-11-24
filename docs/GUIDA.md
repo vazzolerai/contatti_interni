@@ -198,3 +198,42 @@ explorer "$env:LOCALAPPDATA\it.contattiinterni.app\logs"
 
 - **Credenziali salvate**: Pannello di controllo → Gestione credenziali → Credenziali di Windows → voci `accesso.ContattiInterni` e `sessione.ContattiInterni`.
 - **Senza linea**: i messaggi scritti restano "In invio…" e partono da soli appena torna la connessione, anche dopo un riavvio del PC.
+
+---
+
+## Parte 3 – Come si comporta l'app (notifiche, icona vicino all'orologio)
+
+| Situazione | Cosa succede |
+|---|---|
+| Si preme la **X** della finestra | La finestra si nasconde, l'app resta attiva: icona vicino all'orologio. La prima volta compare una notifica che lo spiega. |
+| Clic sull'icona vicino all'orologio | La finestra si riapre. |
+| Tasto destro sull'icona → **Esci** | Chiede conferma ("non riceverai più i messaggi fino al prossimo avvio"). |
+| Si apre l'app una seconda volta | Non parte una seconda copia: si mostra quella già aperta. |
+| Accensione del PC | L'app parte da sola (solo nella versione **installata**, non in quella di prova). |
+
+**Punto vendita – arriva un messaggio dalla sede:**
+1. la finestra torna davanti a tutto (anche se era chiusa nella tray) e l'icona sulla barra lampeggia;
+2. suona un "din-don", **una sola volta**;
+3. se la finestra non era davanti, compare anche la notifica di Windows;
+4. in alto resta una **fascia gialla "Nuovo messaggio da Casa madre"** finché qualcuno non preme **Ho visto** (o risponde);
+5. pallino rosso con il numero sull'icona della barra e su quella vicino all'orologio.
+
+**Casa madre – arriva un messaggio da un punto vendita:**
+- notifica di Windows con il **nome del punto vendita** e l'inizio del messaggio (se arrivano più messaggi insieme, una sola notifica riassuntiva);
+- l'icona sulla barra lampeggia; contatore rosso accanto al punto vendita nell'elenco; numero totale sul pallino dell'icona;
+- nessuna notifica se quella conversazione è già aperta davanti agli occhi.
+
+### Limiti di Windows da conoscere
+- **"Non disturbare" / Assistente notifiche**: se attivo, Windows nasconde le notifiche e il loro suono. Per questo sul punto vendita l'app fa comunque suonare il proprio "din-don" e porta la finestra davanti. Consiglio: sui PC dei negozi lasciare "Non disturbare" disattivato (Impostazioni → Sistema → Notifiche).
+- **Primo piano**: Windows a volte impedisce a un'app di mettersi davanti mentre si sta scrivendo in un'altra. In quel caso la finestra lampeggia sulla barra delle applicazioni e la fascia gialla resta finché qualcuno non la vede.
+- Nella versione di prova (`npm run avvia`) le notifiche possono comparire con il nome "Windows PowerShell": nella versione installata compariranno come "Contatti Interni".
+
+### Anteprima della fase 3 nella finestra vera
+Per vedere notifiche e primo piano senza Supabase, crea il file `app\.env.development.local` con:
+
+```
+VITE_ANTEPRIMA=pv
+VITE_ANTEPRIMA_ARRIVO_SECONDI=40
+```
+
+poi `npm run avvia`: ogni 40 secondi arriva un messaggio finto. **Cancella il file finita la prova**, altrimenti l'app di prova resta in anteprima.

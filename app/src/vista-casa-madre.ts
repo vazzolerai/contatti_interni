@@ -1,6 +1,8 @@
 // Vista CASA MADRE: elenco dei punti vendita a sinistra, conversazione a destra.
 import type { Archivio } from './archivio';
+import { aggiornaBadge, finestraDavanti, notifica, raggruppa, richiamaAttenzione } from './avvisi';
 import { aggiornaFascia, creaComposer, disegnaChat, type Composer } from './componenti';
+import type { Messaggio } from './tipi';
 import { log } from './log';
 import { supabase } from './supabase';
 import { h, quandoBreve } from './ui';
@@ -141,12 +143,34 @@ export function vistaCasaMadre(radice: HTMLElement, archivio: Archivio): Vista {
     disegnaConversazione();
   };
 
+  // ------------------------------------------------------- notifiche
+  // Notifica di Windows con il nome del punto vendita, salvo quando la sua
+  // conversazione è già aperta davanti agli occhi.
+  const nomeDi = (id: number) => puntiVendita.find((p) => p.id === id)?.nome ?? 'Punto vendita';
+  archivio.onNuovoInArrivo = raggruppa<Messaggio>(800, (arrivati) => {
+    const davanti = finestraDavanti();
+    const daAvvisare = arrivati.filter((m) => !(davanti && aperto?.id === m.punto_vendita_id));
+    if (daAvvisare.length === 0) return;
+    const perPv = new Map<number, Messaggio[]>();
+    for (const m of daAvvisare) perPv.set(m.punto_vendita_id, [...(perPv.get(m.punto_vendita_id) ?? []), m]);
+    if (perPv.size === 1) {
+      const [[pv, lista]] = [...perPv];
+      void notifica(nomeDi(pv), lista.length === 1 ? lista[0].testo : `${lista.length} nuovi messaggi`);
+    } else {
+      const nomi = [...perPv.keys()].map(nomeDi).join(', ');
+      void notifica(`${daAvvisare.length} nuovi messaggi`, `Da: ${nomi}`);
+    }
+    void richiamaAttenzione();
+    log.info('Notifica Casa madre', { messaggi: daAvvisare.length, puntiVendita: perPv.size });
+  });
+
   // ------------------------------------------------------------ eventi
   archivio.onRicaricato = () => void caricaPuntiVendita();
   const smetti = archivio.ascolta(() => {
     disegnaElenco();
     disegnaConversazione();
     segnaLettiSeVisibile();
+    void aggiornaBadge(archivio.daLeggereTotale());
   });
   const aggiornaRete = () => aggiornaFascia(fascia, archivio);
   window.addEventListener('online', aggiornaRete);
@@ -160,6 +184,7 @@ export function vistaCasaMadre(radice: HTMLElement, archivio: Archivio): Vista {
   return {
     distruggi() {
       smetti();
+      archivio.onNuovoInArrivo = undefined;
       window.removeEventListener('online', aggiornaRete);
       window.removeEventListener('offline', aggiornaRete);
       window.removeEventListener('focus', segnaLettiSeVisibile);

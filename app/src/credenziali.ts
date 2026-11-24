@@ -1,7 +1,7 @@
 // Credenziali e sessione nel Gestore credenziali di Windows (tramite la parte Rust).
 // Solo durante lo sviluppo nel browser (npm run dev) si usa sessionStorage.
 import { invoke } from '@tauri-apps/api/core';
-import { inTauri } from './config';
+import { inTauri, sviluppo } from './config';
 import { log } from './log';
 
 type Voce = 'accesso' | 'sessione';
@@ -13,7 +13,7 @@ export interface Accesso {
 
 export async function leggi(voce: Voce): Promise<string | null> {
   try {
-    if (!inTauri) return sessionStorage.getItem(`sviluppo-${voce}`);
+    if (!inTauri || sviluppo.anteprima) return sessionStorage.getItem(`sviluppo-${voce}`);
     return await invoke<string | null>('credenziali_leggi', { chiave: voce });
   } catch (e) {
     log.errore(`Credenziali: lettura "${voce}" non riuscita`, e);
@@ -23,7 +23,7 @@ export async function leggi(voce: Voce): Promise<string | null> {
 
 export async function salva(voce: Voce, valore: string): Promise<void> {
   try {
-    if (!inTauri) return sessionStorage.setItem(`sviluppo-${voce}`, valore);
+    if (!inTauri || sviluppo.anteprima) return sessionStorage.setItem(`sviluppo-${voce}`, valore);
     await invoke('credenziali_salva', { chiave: voce, valore });
   } catch (e) {
     log.errore(`Credenziali: salvataggio "${voce}" non riuscito`, e);
@@ -32,7 +32,7 @@ export async function salva(voce: Voce, valore: string): Promise<void> {
 
 export async function cancella(voce: Voce): Promise<void> {
   try {
-    if (!inTauri) return sessionStorage.removeItem(`sviluppo-${voce}`);
+    if (!inTauri || sviluppo.anteprima) return sessionStorage.removeItem(`sviluppo-${voce}`);
     await invoke('credenziali_cancella', { chiave: voce });
   } catch (e) {
     log.errore(`Credenziali: cancellazione "${voce}" non riuscita`, e);

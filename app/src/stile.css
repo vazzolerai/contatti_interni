@@ -218,3 +218,23 @@ button, input, textarea { font: inherit; color: inherit; }
   .chat, .composer, .testata { padding-left: 14px; padding-right: 14px; }
   .suggerimento { display: none; }
 }
+
+/* ------------------------- Punto vendita: fascia "nuovo messaggio" */
+.fascia-nuovo {
+  flex: none;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #ffd54f;
+  color: #3d2c00;
+  padding: 12px 24px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  border-bottom: 3px solid #e0a800;
+  animation: lampeggia 1s ease-in-out 3;
+}
+.nuovo-icona { font-size: 1.6rem; }
+.nuovo-testo { flex: 1; min-width: 0; }
+.pulsante-visto { background: #3d2c00; min-width: 150px; font-size: 1.15rem; flex: none; }
+.pulsante-visto:hover { background: #000; }
+@keyframes lampeggia { 50% { background: #fff3c4; } }

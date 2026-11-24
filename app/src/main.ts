@@ -1,7 +1,10 @@
 // Avvio dell'app: ripristina l'accesso e mostra la vista giusta in base al ruolo.
 import './log';
 import { Archivio } from './archivio';
-import { configurazioneValida } from './config';
+import { invoke } from '@tauri-apps/api/core';
+import { listen } from '@tauri-apps/api/event';
+import { aggiornaBadge, notifica } from './avvisi';
+import { configurazioneValida, inTauri } from './config';
 import { log } from './log';
 import { esci, ripristinaSessione, supabase, type Esito } from './supabase';
 import type { Sede } from './tipi';
@@ -22,6 +25,7 @@ function fermaVista(): void {
   archivio?.chiudi();
   vista = null;
   archivio = null;
+  void aggiornaBadge(0);
 }
 
 async function mostraSede(sede: Sede): Promise<void> {
@@ -89,6 +93,27 @@ window.addEventListener('online', () => {
   if (!archivio) programmaNuovoTentativo(500);
 });
 
+// "Esci" dal menu dell'icona vicino all'orologio: si chiede conferma,
+// perché uscendo non arrivano più i messaggi.
+if (inTauri) {
+  void listen('richiesta-uscita', async () => {
+    const ok = await conferma(
+      'Se esci, Contatti Interni non riceverà più i messaggi fino al prossimo avvio del computer. Vuoi uscire lo stesso?',
+      'Esci', 'Resta attivo');
+    if (ok) await invoke('esci_app');
+  });
+
+  // La prima volta che si chiude la finestra, si spiega dove è finita l'app.
+  void listen('finestra-nascosta', () => {
+    try {
+      if (localStorage.getItem('ci-spiegata-tray')) return;
+      localStorage.setItem('ci-spiegata-tray', '1');
+    } catch { /* ignora */ }
+    void notifica('Contatti Interni resta attivo',
+      'I messaggi continueranno ad arrivare. Per riaprire la finestra, fai clic sull\'icona vicino all\'orologio.');
+  });
+}
+
 // Scorciatoia nascosta per il consulente: Ctrl+Maiusc+L scollega questo PC.
 window.addEventListener('keydown', async (e) => {
   if (!(e.ctrlKey && e.shiftKey && e.key.toLowerCase() === 'l') || !archivio) return;
@@ -104,7 +129,7 @@ window.addEventListener('keydown', async (e) => {
 // ----------------------------------------------------------------- avvio
 // Solo in sviluppo: ?anteprima=pv oppure ?anteprima=sede mostra dati finti.
 if (import.meta.env.DEV) {
-  const modo = new URLSearchParams(location.search).get('anteprima');
+  const modo = new URLSearchParams(location.search).get('anteprima') ?? import.meta.env.VITE_ANTEPRIMA;
   if (modo === 'pv' || modo === 'sede') (await import('./anteprima')).installaAnteprima(modo);
 }
 

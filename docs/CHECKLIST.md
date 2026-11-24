@@ -27,11 +27,16 @@ Legenda: ✅ fatto · 🧪 da provare (consulente) · ⬜ da fare
 - 🧪 Prova con il progetto Supabase vero (docs/GUIDA.md, Parte 2)
 
 ## Fase 3 – Notifiche, tray, avvio automatico
-- ⬜ Icona nell'area di notifica, la chiusura della finestra non esce dall'app
-- ⬜ Avvio automatico con Windows
-- ⬜ Notifica Windows con suono; badge su icona e tray
-- ⬜ Punto vendita: finestra in primo piano + fascia "Nuovo messaggio dalla sede" con "Ho visto" (suono una volta)
-- ⬜ Casa madre: notifica con nome del punto vendita
+- ✅ Icona nell'area di notifica (Apri / Esci con conferma); la X nasconde la finestra
+- ✅ Una sola copia dell'app alla volta
+- ✅ Avvio automatico con Windows (solo versione installata)
+- ✅ Notifica Windows con suono; badge con numero su barra delle applicazioni e area di notifica
+- ✅ Punto vendita: finestra in primo piano + lampeggio + din-don (una volta) + fascia "Ho visto"
+- ✅ Casa madre: notifica con nome del punto vendita, raggruppata se arrivano più messaggi
+- ✅ WebView2 non rallentato quando la finestra è nascosta; suono senza bisogno di clic
+- ✅ Provato nella finestra vera con messaggi simulati (log: primo piano riuscito, nessun errore)
+- 🧪 Da vedere con i tuoi occhi: icona vicino all'orologio, pallino rosso, notifica, X che nasconde
+- 🧪 Avvio automatico: verificabile solo con l'installer (fase 4)
 
 ## Fase 4 – Build, installer, aggiornamenti
 - ⬜ Workflow release su runner Windows (installer NSIS .exe)

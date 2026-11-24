@@ -2,9 +2,12 @@
 // Si apre con  npm run dev  e poi  http://localhost:1420/?anteprima=pv  oppure  ?anteprima=sede
 // Questo file non entra mai nell'installer (viene caricato solo con import.meta.env.DEV).
 
+import { sviluppo } from './config';
+
 type Riga = Record<string, unknown>;
 
 export function installaAnteprima(modo: 'pv' | 'sede'): void {
+  sviluppo.anteprima = true;
   const sedi: Riga[] = [{ id: 100, codice: 'sede', nome: 'Casa madre', ruolo: 'casa_madre', attivo: true, ordine: 0 }];
   for (let i = 1; i <= 18; i++) {
     sedi.push({ id: i, codice: `pv${String(i).padStart(2, '0')}`, nome: `Punto vendita ${i}`, ruolo: 'punto_vendita', attivo: true, ordine: i });
@@ -70,6 +73,18 @@ export function installaAnteprima(modo: 'pv' | 'sede'): void {
     }
     return json({ message: 'anteprima: non gestito' }, 404);
   };
+
+  // Simula un messaggio in arrivo (dalla console: __simulaArrivo('testo'),
+  // oppure in automatico con VITE_ANTEPRIMA_ARRIVO_SECONDI nel file .env).
+  const simula = (testo = 'Messaggio di prova in arrivo') => {
+    const dir = modo === 'sede' ? 'verso_sede' : 'verso_punto_vendita';
+    const pv = modo === 'sede' ? 1 + Math.floor(Math.random() * 18) : (io.id as number);
+    messaggi.push(msg(pv, dir, testo, 0, 'Prova', false));
+    window.dispatchEvent(new Event('online')); // fa ricaricare l'archivio
+  };
+  (window as unknown as { __simulaArrivo: typeof simula }).__simulaArrivo = simula;
+  const ogni = Number(import.meta.env.VITE_ANTEPRIMA_ARRIVO_SECONDI ?? 0);
+  if (ogni > 0) setInterval(() => simula(`Messaggio automatico delle ${new Date().toLocaleTimeString('it-IT')}`), ogni * 1000);
 
   // Accesso automatico in anteprima
   sessionStorage.setItem('sviluppo-accesso', JSON.stringify({ codice: io.codice, password: 'anteprima' }));

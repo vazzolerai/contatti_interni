@@ -17,3 +17,6 @@ export const MAX_NOME = 60;
 
 /** true se l'app gira dentro Tauri (e non in un browser durante lo sviluppo). */
 export const inTauri = typeof window !== 'undefined' && '__TAURI_INTERNALS__' in window;
+
+/** Solo sviluppo: true quando è attiva l'anteprima con dati finti. */
+export const sviluppo = { anteprima: false };
