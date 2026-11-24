@@ -7,6 +7,7 @@
 mod badge;
 mod credenziali;
 
+use std::sync::atomic::{AtomicU32, Ordering};
 use std::time::Duration;
 use tauri::menu::{Menu, MenuItem};
 use tauri::tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent};
@@ -15,12 +16,33 @@ use tauri_plugin_log::{RotationStrategy, Target, TargetKind, TimezoneStrategy};
 
 const ID_TRAY: &str = "principale";
 
+/// Ultimo numero mostrato sul badge: serve a rimetterlo quando la finestra
+/// ricompare (Windows perde il badge della barra se la finestra era nascosta).
+static BADGE: AtomicU32 = AtomicU32::new(0);
+
+fn applica_sovrapposizione(window: &WebviewWindow) {
+    let n = BADGE.load(Ordering::Relaxed);
+    let _ = window.set_overlay_icon(if n > 0 { Some(badge::sovrapposizione(n)) } else { None });
+}
+
+/// Rimette il badge poco dopo che la finestra è ricomparsa sulla barra.
+fn riapplica_badge(window: &WebviewWindow) {
+    let w = window.clone();
+    std::thread::spawn(move || {
+        for attesa in [300, 1500] {
+            std::thread::sleep(Duration::from_millis(attesa));
+            applica_sovrapposizione(&w);
+        }
+    });
+}
+
 /// Mostra la finestra principale e la porta davanti.
 fn mostra(app: &AppHandle) {
     if let Some(w) = app.get_webview_window("main") {
         let _ = w.show();
         let _ = w.unminimize();
         let _ = w.set_focus();
+        riapplica_badge(&w);
     }
 }
 
@@ -72,6 +94,7 @@ fn porta_in_primo_piano(window: WebviewWindow) {
     let _ = window.set_always_on_top(true);
     let _ = window.set_focus();
     let _ = window.request_user_attention(Some(UserAttentionType::Critical));
+    riapplica_badge(&window);
     let w = window.clone();
     std::thread::spawn(move || {
         std::thread::sleep(Duration::from_millis(2500));
@@ -103,7 +126,8 @@ fn aggiorna_badge(app: AppHandle, window: WebviewWindow, conteggio: u32) {
         };
         let _ = tray.set_tooltip(Some(testo));
     }
-    let _ = window.set_overlay_icon(if conteggio > 0 { Some(badge::sovrapposizione(conteggio)) } else { None });
+    BADGE.store(conteggio, Ordering::Relaxed);
+    applica_sovrapposizione(&window);
 }
 
 /// Chiude davvero l'app (dopo la conferma nell'interfaccia).
