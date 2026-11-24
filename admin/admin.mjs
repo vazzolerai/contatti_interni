@@ -76,11 +76,11 @@ const comandi = {
         riga = data;
       }
       if (riga.user_id) {
-        console.log(`  · ${s.codice.padEnd(10)} account già presente (nessuna modifica)`);
+        console.log(`  · ${s.codice.padEnd(14)} account già presente (nessuna modifica)`);
         continue;
       }
       const password = await creaAccount(riga);
-      console.log(`  ✔ ${s.codice.padEnd(10)} account creato`);
+      console.log(`  ✔ ${s.codice.padEnd(14)} account creato`);
       credenziali.push({ codice: s.codice, nome: riga.nome, password });
     }
 
@@ -205,7 +205,7 @@ const comandi = {
       if (riga.nome !== s.nome || riga.ordine !== s.ordine) {
         const { error } = await admin.from('sedi').update({ nome: s.nome, ordine: s.ordine }).eq('id', riga.id);
         if (error) esci(error.message);
-        console.log(`  ✔ ${s.codice.padEnd(10)} "${riga.nome}" → "${s.nome}"`);
+        console.log(`  ✔ ${s.codice.padEnd(14)} "${riga.nome}" → "${s.nome}"`);
         modifiche++;
       }
     }
@@ -229,12 +229,12 @@ const comandi = {
       if (data.users.length < 200) break;
     }
     const larghezza = Math.max(4, ...nelDb.map((r) => r.nome.length));
-    console.log(`\n  ${'CODICE'.padEnd(10)} ${'NOME'.padEnd(larghezza)}  ${'STATO'.padEnd(12)} ULTIMO ACCESSO`);
+    console.log(`\n  ${'CODICE'.padEnd(14)} ${'NOME'.padEnd(larghezza)}  ${'STATO'.padEnd(12)} ULTIMO ACCESSO`);
     for (const r of nelDb) {
       const u = r.user_id ? utenti.get(r.user_id) : null;
       const stato = !r.attivo ? 'disattivato' : !u ? 'senza account' : 'attivo';
       const accesso = u?.last_sign_in_at ? new Date(u.last_sign_in_at).toLocaleString('it-IT') : '-';
-      console.log(`  ${r.codice.padEnd(10)} ${r.nome.padEnd(larghezza)}  ${stato.padEnd(12)} ${accesso}`);
+      console.log(`  ${r.codice.padEnd(14)} ${r.nome.padEnd(larghezza)}  ${stato.padEnd(12)} ${accesso}`);
     }
     console.log('');
   },

@@ -179,9 +179,9 @@ export function stampaPassword(righe) {
   console.log('  CREDENZIALI - copiale ORA in un posto sicuro (es. gestore di password).');
   console.log('  Non verranno mostrate di nuovo e non sono salvate da nessuna parte.');
   console.log(`╚${linea}╝\n`);
-  console.log(`  ${'CODICE'.padEnd(10)} ${'NOME'.padEnd(larghezzaNome)}  PASSWORD`);
+  console.log(`  ${'CODICE'.padEnd(14)} ${'NOME'.padEnd(larghezzaNome)}  PASSWORD`);
   for (const r of righe) {
-    console.log(`  ${r.codice.padEnd(10)} ${r.nome.padEnd(larghezzaNome)}  ${r.password}`);
+    console.log(`  ${r.codice.padEnd(14)} ${r.nome.padEnd(larghezzaNome)}  ${r.password}`);
   }
   console.log('');
 }

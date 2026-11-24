@@ -7,93 +7,93 @@
       "ruolo": "casa_madre"
     },
     {
-      "codice": "pv01",
-      "nome": "Punto vendita 1",
+      "codice": "concordia",
+      "nome": "concordia",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv02",
-      "nome": "Punto vendita 2",
+      "codice": "fontanafredda",
+      "nome": "fontanafredda",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv03",
-      "nome": "Punto vendita 3",
+      "codice": "centrale",
+      "nome": "centrale",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv04",
-      "nome": "Punto vendita 4",
+      "codice": "posta",
+      "nome": "posta",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv05",
-      "nome": "Punto vendita 5",
+      "codice": "mdl",
+      "nome": "mdl",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv06",
-      "nome": "Punto vendita 6",
+      "codice": "garibaldi",
+      "nome": "garibaldi",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv07",
-      "nome": "Punto vendita 7",
+      "codice": "borgomeduna",
+      "nome": "borgomeduna",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv08",
-      "nome": "Punto vendita 8",
+      "codice": "zoppola",
+      "nome": "zoppola",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv09",
-      "nome": "Punto vendita 9",
+      "codice": "torre",
+      "nome": "torre",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv10",
-      "nome": "Punto vendita 10",
+      "codice": "villotta",
+      "nome": "villotta",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv11",
-      "nome": "Punto vendita 11",
+      "codice": "porto",
+      "nome": "porto",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv12",
-      "nome": "Punto vendita 12",
+      "codice": "romans",
+      "nome": "romans",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv13",
-      "nome": "Punto vendita 13",
+      "codice": "sclavons",
+      "nome": "sclavons",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv14",
-      "nome": "Punto vendita 14",
+      "codice": "cimpello",
+      "nome": "cimpello",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv15",
-      "nome": "Punto vendita 15",
+      "codice": "tiezzo",
+      "nome": "tiezzo",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv16",
-      "nome": "Punto vendita 16",
+      "codice": "fiumeveneto",
+      "nome": "fiumeveneto",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv17",
-      "nome": "Punto vendita 17",
+      "codice": "molinari",
+      "nome": "molinari",
       "ruolo": "punto_vendita"
     },
     {
-      "codice": "pv18",
-      "nome": "Punto vendita 18",
+      "codice": "valle",
+      "nome": "valle",
       "ruolo": "punto_vendita"
     }
   ]
