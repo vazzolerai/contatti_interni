@@ -124,6 +124,7 @@ Risultato atteso: `14 prove superate, 0 fallite`.
 | Aggiungere un punto vendita | `npm run aggiungi-punto-vendita -- pv19 "Punto vendita 19"` |
 | Disattivare un punto vendita | `npm run disattiva -- pv19` |
 | Riattivarlo | `npm run riattiva -- pv19` |
+| Cambiare il codice di accesso di una sede (la password resta uguale) | `npm run rinomina-codice -- vecchio nuovo` |
 | Verifica di sicurezza | `npm run verifica-sicurezza` |
 
 > Nota: il `--` prima del codice è necessario (separa gli argomenti di npm da quelli dello script).
@@ -186,7 +187,7 @@ npm run avvia
 ```
 
 3. Nella finestra dell'app accedi come punto vendita (es. `pv01` e la sua password).
-4. **Per vedere le due viste insieme**, mentre l'app è aperta apri nel browser <http://localhost:1420> (senza `?anteprima`): è la stessa app, collegata allo stesso Supabase. Lì accedi come `sede`. Scrivi da una parte e guarda arrivare il messaggio dall'altra, in tempo reale.
+4. **Per vedere le due viste insieme**, mentre l'app è aperta apri nel browser <http://localhost:1420> (senza `?anteprima`): è la stessa app, collegata allo stesso Supabase. Lì accedi come `casamadre`. Scrivi da una parte e guarda arrivare il messaggio dall'altra, in tempo reale.
 
 ### Cose utili da sapere
 - **Scollegare un PC dall'account** (es. per cambiare sede): nella finestra dell'app premi **Ctrl+Maiusc+L** e conferma. È una scorciatoia "nascosta", pensata per te e non per le commesse.

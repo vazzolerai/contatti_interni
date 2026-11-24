@@ -14,6 +14,7 @@
     "aggiungi-punto-vendita": "node --env-file-if-exists=.env admin.mjs aggiungi-punto-vendita",
     "disattiva": "node --env-file-if-exists=.env admin.mjs disattiva",
     "riattiva": "node --env-file-if-exists=.env admin.mjs riattiva",
+    "rinomina-codice": "node --env-file-if-exists=.env admin.mjs rinomina-codice",
     "verifica-sicurezza": "node --env-file-if-exists=.env verifica-sicurezza.mjs",
     "aiuto": "node admin.mjs",
     "configura-github": "node --env-file-if-exists=.env configura-github.mjs"

@@ -145,6 +145,45 @@ const comandi = {
     console.log(`\n  ✔ ${codice} riattivato.\n`);
   },
 
+  /**
+   * Cambia il codice di accesso di una sede (es. sede → casamadre).
+   * Aggiorna database, account di accesso e config/sedi.json. La password resta uguale.
+   * I PC già collegati con quella sede dovranno rifare l'accesso con il nuovo codice.
+   */
+  async 'rinomina-codice'(vecchio, nuovo) {
+    controllaCodice(vecchio);
+    controllaCodice(nuovo);
+    if (vecchio === nuovo) esci('Il nuovo codice è uguale a quello attuale.');
+    const sede = await sedeDaCodice(vecchio);
+    const { data: occupato } = await admin.from('sedi').select('id').eq('codice', nuovo).maybeSingle();
+    if (occupato) esci(`Il codice ${nuovo} è già usato da un'altra sede.`);
+
+    if (sede.user_id) {
+      const { error } = await admin.auth.admin.updateUserById(sede.user_id, {
+        email: emailDi(nuovo),
+        email_confirm: true,
+        app_metadata: { codice: nuovo },
+      });
+      if (error) esci(`Aggiornamento dell'account non riuscito: ${error.message}`);
+      await revocaSessioni(sede.user_id);
+    }
+    const { error } = await admin.from('sedi').update({ codice: nuovo }).eq('id', sede.id);
+    if (error) esci(`Aggiornamento della sede non riuscito: ${error.message}`);
+
+    const { dati } = leggiFileSedi();
+    const voce = dati.sedi.find((s) => s.codice === vecchio);
+    if (voce) {
+      voce.codice = nuovo;
+      scriviFileSedi(dati);
+      leggiFileSedi();
+    } else {
+      console.log(`  ! ${vecchio} non era in config/sedi.json: aggiornalo a mano.`);
+    }
+
+    console.log(`\n  ✔ Codice cambiato: ${vecchio} → ${nuovo} (database, account e config/sedi.json).`);
+    console.log('    La password è la stessa. I PC collegati con questa sede chiederanno di nuovo l\'accesso.\n');
+  },
+
   /** Copia nomi e ordine da config/sedi.json al database. */
   async 'sincronizza-nomi'() {
     const { sedi } = leggiFileSedi();
@@ -207,6 +246,7 @@ Comandi disponibili (dalla cartella admin):
   npm run aggiungi-punto-vendita -- pv19 "Punto vendita 19"
   npm run disattiva -- pv19
   npm run riattiva -- pv19
+  npm run rinomina-codice -- sede casamadre
   npm run verifica-sicurezza
 `);
   process.exit(comando ? 1 : 0);

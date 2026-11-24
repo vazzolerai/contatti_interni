@@ -1,24 +1,100 @@
 {
-  "_istruzioni": "Elenco delle sedi. Per cambiare un nome modifica il campo 'nome' e poi lancia: npm run sincronizza-nomi (dalla cartella admin). Il 'codice' NON va cambiato dopo la creazione degli account: serve per il login. L'ordine dell'elenco è quello di questo file.",
+  "_istruzioni": "Elenco delle sedi. Per cambiare un nome modifica il campo 'nome' e poi lancia: npm run sincronizza-nomi (dalla cartella admin). Il 'codice' serve per l'accesso: non modificarlo qui, ma con: npm run rinomina-codice -- vecchio nuovo. L'ordine dell'elenco è quello di questo file.",
   "sedi": [
-    { "codice": "sede", "nome": "Casa madre", "ruolo": "casa_madre" },
-    { "codice": "pv01", "nome": "Punto vendita 1", "ruolo": "punto_vendita" },
-    { "codice": "pv02", "nome": "Punto vendita 2", "ruolo": "punto_vendita" },
-    { "codice": "pv03", "nome": "Punto vendita 3", "ruolo": "punto_vendita" },
-    { "codice": "pv04", "nome": "Punto vendita 4", "ruolo": "punto_vendita" },
-    { "codice": "pv05", "nome": "Punto vendita 5", "ruolo": "punto_vendita" },
-    { "codice": "pv06", "nome": "Punto vendita 6", "ruolo": "punto_vendita" },
-    { "codice": "pv07", "nome": "Punto vendita 7", "ruolo": "punto_vendita" },
-    { "codice": "pv08", "nome": "Punto vendita 8", "ruolo": "punto_vendita" },
-    { "codice": "pv09", "nome": "Punto vendita 9", "ruolo": "punto_vendita" },
-    { "codice": "pv10", "nome": "Punto vendita 10", "ruolo": "punto_vendita" },
-    { "codice": "pv11", "nome": "Punto vendita 11", "ruolo": "punto_vendita" },
-    { "codice": "pv12", "nome": "Punto vendita 12", "ruolo": "punto_vendita" },
-    { "codice": "pv13", "nome": "Punto vendita 13", "ruolo": "punto_vendita" },
-    { "codice": "pv14", "nome": "Punto vendita 14", "ruolo": "punto_vendita" },
-    { "codice": "pv15", "nome": "Punto vendita 15", "ruolo": "punto_vendita" },
-    { "codice": "pv16", "nome": "Punto vendita 16", "ruolo": "punto_vendita" },
-    { "codice": "pv17", "nome": "Punto vendita 17", "ruolo": "punto_vendita" },
-    { "codice": "pv18", "nome": "Punto vendita 18", "ruolo": "punto_vendita" }
+    {
+      "codice": "casamadre",
+      "nome": "Casa madre",
+      "ruolo": "casa_madre"
+    },
+    {
+      "codice": "pv01",
+      "nome": "Punto vendita 1",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv02",
+      "nome": "Punto vendita 2",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv03",
+      "nome": "Punto vendita 3",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv04",
+      "nome": "Punto vendita 4",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv05",
+      "nome": "Punto vendita 5",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv06",
+      "nome": "Punto vendita 6",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv07",
+      "nome": "Punto vendita 7",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv08",
+      "nome": "Punto vendita 8",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv09",
+      "nome": "Punto vendita 9",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv10",
+      "nome": "Punto vendita 10",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv11",
+      "nome": "Punto vendita 11",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv12",
+      "nome": "Punto vendita 12",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv13",
+      "nome": "Punto vendita 13",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv14",
+      "nome": "Punto vendita 14",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv15",
+      "nome": "Punto vendita 15",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv16",
+      "nome": "Punto vendita 16",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv17",
+      "nome": "Punto vendita 17",
+      "ruolo": "punto_vendita"
+    },
+    {
+      "codice": "pv18",
+      "nome": "Punto vendita 18",
+      "ruolo": "punto_vendita"
+    }
   ]
 }
