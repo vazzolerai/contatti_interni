@@ -1,6 +1,6 @@
 [package]
 name = "contatti-interni"
-version = "0.1.0"
+version = "0.1.1"
 description = "Contatti Interni - messaggistica interna"
 edition = "2021"
 
